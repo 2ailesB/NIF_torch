@@ -1,0 +1,33 @@
+model: NIF_multiscaleLastLayerParametrized
+dataset: cylinder
+data_cfg:
+  train_timesteps: 16
+  test_timesteps: 4
+  normalize: standard # not implemented
+cfg_shape_net:
+  use_resblock: false
+  connectivity: last_layer
+  input_dim: 2
+  output_dim: 2
+  units: 30
+  nlayers: 2
+  weight_init_factor: 0.01
+  omega_0: 30.0
+cfg_parameter_net:
+  use_resblock: false
+  input_dim: 1
+  latent_dim: 10
+  units: 30
+  nlayers: 2
+  activation: swish
+training_cfg:
+  batch_size: 8192
+  checkpt_epoch: 50
+  display_epoch: 50
+  enable_mixed_precision: false
+  enable_multi_gpu: false
+  lr_init: 0.001
+  nepoch: 600
+  print_figure_epoch: 50
+  ckpt_epoch: 0
+  ckpt_path: logs/1dwave/run_NIF_1dwave_20220630-121818/

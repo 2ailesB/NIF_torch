@@ -1,0 +1,31 @@
+model: NIF
+dataset: 1dwave
+data_cfg:
+  train_samples: 1600
+  test_samples: 400
+  normalize: standard # not implemented
+cfg_shape_net:
+  connectivity: full
+  input_dim: 1
+  output_dim: 1
+  units: 30
+  nlayers: 2
+  activation: swish
+cfg_parameter_net:
+  input_dim: 1
+  latent_dim: 1
+  units: 30
+  nlayers: 2
+  activation: swish
+training_cfg:
+  batch_size: 512
+  checkpt_epoch: 1000
+  display_epoch: 10
+  enable_lr_scheduling: true # not implemented
+  enable_mixed_precision: false
+  enable_multi_gpu: false
+  lr_init: 0.005
+  nepoch: 5000
+  print_figure_epoch: 10
+  ckpt_epoch: 0
+  ckpt_path: logs/1dwave/run_NIF_1dwave_20220630-121818/
