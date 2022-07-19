@@ -127,3 +127,11 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# custom
+*.DS_Store
+datasets/data
+logs/
+draft.py
+sbatch/
+logs_hacienda/
