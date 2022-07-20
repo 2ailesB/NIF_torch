@@ -1,22 +1,13 @@
 import torch
 import torch.nn as nn
 
-from layers.mlp import MLP
-from layers.siren import SIREN
+from nif import NIF
 
-class NIF_lastlayer(nn.Module):
-    def __init__(self, cfg_shape_net, cfg_parameter_net):
+class simple_NIF(nn.Module):
+    def __init__(self, cfg_parameter_net, cfg_shape_net):
         super().__init__()
-        self.cfg_shape_net = cfg_shape_net
-        self.cfg_parameter_net = cfg_parameter_net
 
-        if self.cfg_parameter_net[''] =='mlp':
-            self.parameter_net = MLP(self.cfg_parameter_net[''])
-        else :
-            self.parameter_net = SIREN(self.cfg_parameter_net[''])
-        if self.cfg_shape_net[''] =='mlp':
-            self.shape_net = MLP(self.cfg_shape_net[''])
-        else :
-            self.shape_net = SIREN(self.cfg_shape_net[''])
-    def forward(self):
-        return None
+        self.model = NIF(cfg_parameter_net, cfg_shape_net)
+
+    def forward(self, x):
+        return self.model(x)
