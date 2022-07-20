@@ -8,8 +8,6 @@ from torchmetrics.image.fid import FrechetInceptionDistance as FID
 from torchvision.utils import make_grid
 from utils.progress_bar import print_progress_bar
 
-#TODO : training loop, logging
-
 class PytorchNIF(nn.Module):
     def __init__(self, criterion='bce', logger=None, opt='adam', device='cpu', ckpt_save_path=None, tag=''):
         super().__init__()
@@ -82,15 +80,15 @@ class PytorchNIF(nn.Module):
 
         return loss / len(dataloader)
 
-    def fit(self, dataloader, n_epochs, gen_lr, disc_lr, validation_data=None, verbose=1, save_images_freq=None, save_criterion='FID', ckpt=None, save_model_freq=None, betas=(0.0, 0.99),  **kwargs):
+    def fit(self, dataloader, n_epochs, lr, validation_data=None, verbose=1, save_images_freq=None, save_criterion='FID', ckpt=None, save_model_freq=None, betas=(0.0, 0.99),  **kwargs):
         assert self.model is not None, 'Model does not seem to have a model, assign the model to the self.model attribute'
         assert self.discriminator is not None, 'Model does not seem to have a discriminator, assign the discriminator to the self.discriminator attribute'
         assert self.input_shape is not None, 'Could not find the input shape, please specify this attribute before fitting the model'
 
         if self.opt_type == 'sgd':
-            self.optG = torch.optim.SGD(params=self.generator.parameters(), lr=gen_lr)
+            self.optG = torch.optim.SGD(params=self.generator.parameters(), lr=lr)
         elif self.opt_type == 'adam':
-            self.opt = torch.optim.Adam(params=self.generator.parameters(), lr=gen_lr, betas=betas)
+            self.opt = torch.optim.Adam(params=self.generator.parameters(), lr=lr, betas=betas)
         else:
             raise ValueError('Unknown optimizer')
 
@@ -104,10 +102,8 @@ class PytorchNIF(nn.Module):
             state = torch.load(ckpt)
             start_epoch = state['epoch']
             self.load_state_dict(state['state_dict'])
-            for g in self.optD.param_groups:
-                g['lr'] = state['lr']['disc_lr']
-            for g in self.optG.param_groups:
-                g['lr'] = state['lr']['gen_lr']
+            for g in self.opt.param_groups:
+                g['lr'] = state['lr']['lr']
 
         self.n_epochs = n_epochs
         for n in range(start_epoch, n_epochs):
@@ -141,7 +137,7 @@ class PytorchNIF(nn.Module):
 
             if save_model_freq is not None and n % save_model_freq == 0 :
                 assert self.ckpt_save_path is not None, 'Need a path to save models'
-                self.save({'gen_lr': gen_lr, 'disc_lr': disc_lr}, n)
+                self.save({'lr': lr}, n)
 
         print(f'Training completed in {str(datetime.datetime.now() - start_time).split(".")[0]}')
 

@@ -2,8 +2,10 @@ import torch
 import torch.nn as nn
 
 from nif import NIF
+from Core.training import PytorchNIF
+from models.nif import NIF
 
-class NIF_multiscale(nn.Module):
+class simple_NIF(NIF):
     def __init__(self, cfg_parameter_net, cfg_shape_net):
         super().__init__()
 

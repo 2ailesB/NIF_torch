@@ -1,11 +1,13 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from Core.training import PytorchNIF
 
 from layers.mlp import MLP
 from layers.siren import SIREN
+from Core.training import PytorchNIF
 
-class NIF(nn.Module):
+class NIF_lastlayer(PytorchNIF):
     def __init__(self, cfg_shape_net, cfg_parameter_net):
         super().__init__()
         self.cfg_shape_net = cfg_shape_net

@@ -4,8 +4,9 @@ import torch.nn.functional as F
 
 from layers.mlp import MLP, MLP_parametrized
 from layers.siren import SIREN, SIREN_parametrized
+from Core.training import PytorchNIF
 
-class NIF(nn.Module):
+class NIF(PytorchNIF):
     def __init__(self, cfg_shape_net, cfg_parameter_net):
         super().__init__()
         self.cfg_shape_net = cfg_shape_net
