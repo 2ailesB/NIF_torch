@@ -135,3 +135,4 @@ logs/
 draft.py
 sbatch/
 logs_hacienda/
+data/
