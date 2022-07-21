@@ -3,7 +3,6 @@ import os
 
 import torch
 import torch.nn as nn
-from torchmetrics.image.fid import FrechetInceptionDistance as FID
 
 from torchvision.utils import make_grid
 from utils.progress_bar import print_progress_bar

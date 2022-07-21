@@ -3,8 +3,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from Core.training import PytorchNIF
 
-from layers.mlp import MLP
-from layers.siren import SIREN
+from models.layers.mlp import MLP
+from models.layers.siren import SIREN
 from Core.training import PytorchNIF
 
 class NIF_lastlayer(PytorchNIF):

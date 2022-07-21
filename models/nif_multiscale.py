@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-from nif import NIF
+from models.nif import NIF
 from Core.training import PytorchNIF
 from models.nif import NIF
 

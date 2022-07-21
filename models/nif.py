@@ -2,8 +2,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from layers.mlp import MLP, MLP_parametrized
-from layers.siren import SIREN, SIREN_parametrized
+from models.layers.mlp import MLP, MLP_parametrized
+from models.layers.siren import SIREN, SIREN_parametrized
 from Core.training import PytorchNIF
 
 class NIF(PytorchNIF):

@@ -33,10 +33,12 @@ def main(path):
     cfg['logger']            = writer
     cfg['ckpt_save_path']    = None
 
-    path = '../datasets/data/'
-    dataset = Wave_1d(path)
-
+    path = '../NIF_expe/datasets/data'
+    dataset = Wave_1d(path, cfg['data_cfg']['normalize'])
     print(dataset)
+
+    return True
+
     torch.manual_seed(cfg['seed'])
     cfg['device'] = 'cuda' if torch.cuda.is_available() else 'cpu'
     print('Device: ', cfg['device'])
@@ -54,4 +56,5 @@ def main(path):
     return True
 
 if __name__ == "__main__":
-    print(main())
+    cfg_path = 'config/nif_1dwave.yaml'
+    print(main(cfg_path))
