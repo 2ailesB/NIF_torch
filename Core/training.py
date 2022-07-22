@@ -8,7 +8,7 @@ from torchvision.utils import make_grid
 from utils.progress_bar import print_progress_bar
 
 class PytorchNIF(nn.Module):
-    def __init__(self, criterion='bce', logger=None, opt='adam', device='cpu', ckpt_save_path=None, tag=''):
+    def __init__(self, criterion='mse', logger=None, opt='adam', device='cpu', ckpt_save_path=None, tag=''):
         super().__init__()
         self.opt_type = opt if opt in ['sgd', 'adam'] else ValueError
         self.opt = None
@@ -18,7 +18,7 @@ class PytorchNIF(nn.Module):
         self.state = {}
         self.criterion = nn.MSELoss(reduction='mean') if criterion == 'mse' else nn.BCELoss(reduction='mean') if criterion == 'bce' else criterion
 
-        self.best_criterion = {'train_loss': 10**10, 'val_loss': 10**10}
+        self.best_criterion = {'train_loss': 10**10, 'val_loss': 10**10, 'mse':10*10}
         self.best_model = None
         self.best_epoch = None
 
@@ -79,15 +79,14 @@ class PytorchNIF(nn.Module):
 
         return loss / len(dataloader)
 
-    def fit(self, dataloader, n_epochs, lr, validation_data=None, verbose=1, save_images_freq=None, save_criterion='FID', ckpt=None, save_model_freq=None, betas=(0.0, 0.99),  **kwargs):
+    def fit(self, dataloader, n_epochs, lr, validation_data=None, verbose=1, save_images_freq=None, save_criterion='mse', ckpt=None, save_model_freq=None, betas=(0.0, 0.99),  **kwargs):
         assert self.model is not None, 'Model does not seem to have a model, assign the model to the self.model attribute'
-        assert self.discriminator is not None, 'Model does not seem to have a discriminator, assign the discriminator to the self.discriminator attribute'
         assert self.input_shape is not None, 'Could not find the input shape, please specify this attribute before fitting the model'
 
         if self.opt_type == 'sgd':
-            self.optG = torch.optim.SGD(params=self.generator.parameters(), lr=lr)
+            self.optG = torch.optim.SGD(params=self.model.parameters(), lr=lr)
         elif self.opt_type == 'adam':
-            self.opt = torch.optim.Adam(params=self.generator.parameters(), lr=lr, betas=betas)
+            self.opt = torch.optim.Adam(params=self.model.parameters(), lr=lr, betas=betas)
         else:
             raise ValueError('Unknown optimizer')
 
@@ -115,7 +114,7 @@ class PytorchNIF(nn.Module):
                 with torch.no_grad():
                     v_loss = self._validate(validation_data)
 
-            epoch_result = {'train_loss': t_loss, 'val_loss': v_loss}
+            epoch_result = {'train_loss': t_loss, 'val_loss': v_loss, save_criterion:t_loss}
             if self.log:
                 for k, v in epoch_result.items():
                     self.log.add_scalar(k, v, n)
@@ -125,14 +124,14 @@ class PytorchNIF(nn.Module):
                 self.__save_state(n)
 
             if n % verbose == 0:
-                print('Epoch {:3d} Gen loss: {:1.4f} Disc loss: {:1.4f} Disc real loss {:1.4f} Disc fake loss {:1.4f} | Validation Gen loss: {:1.4f} Disc loss: {:1.4f} Disc real loss {:1.4f} Disc fake loss {:1.4f} | FID value {:1.4f} | Best epoch {:3d}'.format(
+                print('Epoch {:3d} training loss: {:1.4f} | Validation loss: {:1.4f} | Best epoch {:3d}'.format(
                     n, t_loss, v_loss, self.best_epoch))
 
-            if save_images_freq is not None and n % save_images_freq == 0:
-                noise = torch.randn(32, self.lattent_space_size, device=self.device)
-                fake = self.generate(noise)
-                grid = make_grid(fake)
-                self.log.add_image('images', grid, n)
+            # if save_images_freq is not None and n % save_images_freq == 0: # TODO visual logs
+            #     noise = torch.randn(32, self.lattent_space_size, device=self.device)
+            #     fake = self.generate(noise)
+            #     grid = make_grid(fake)
+            #     self.log.add_image('images', grid, n)
 
             if save_model_freq is not None and n % save_model_freq == 0 :
                 assert self.ckpt_save_path is not None, 'Need a path to save models'
