@@ -21,5 +21,8 @@ class simple_NIF(PytorchNIF):
         self.model = NIF(self.cfg_parameter_net, self.cfg_shape_net)
         self.input_shape = self.cfg_parameter_net['input_dim'] + self.cfg_shape_net['input_dim']
 
+        self.to(self.device)
+        self.model.to(self.device)
+
     def forward(self, x):
         pass

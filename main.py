@@ -35,21 +35,25 @@ def main(path):
     # cfg['ckpt_save_path']    = None
 
     path = '../NIF_expe/datasets/data'
-    dataset = Wave_1d(path, normalize=cfg['data_cfg']['normalize'])
-    print(dataset)
+    dtrain = Wave_1d(path, 0, 1600, normalize=cfg['data_cfg']['normalize'])
+    dtest = Wave_1d(path, 1600, 2000, normalize=cfg['data_cfg']['normalize'])
+    print(dtrain)
 
     torch.manual_seed(cfg['training_cfg']['seed'])
     cfg['device'] = 'cuda' if torch.cuda.is_available() else 'cpu'
     print('Device: ', cfg['device'])
 
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=cfg['training_cfg']['batch_size'], shuffle=True, num_workers=1)
+    dataloader_train = torch.utils.data.DataLoader(dtrain, batch_size=cfg['training_cfg']['batch_size'], shuffle=True, num_workers=1)
+    dataloader_test = torch.utils.data.DataLoader(dtest, batch_size=cfg['training_cfg']['batch_size'], shuffle=True, num_workers=1)
 
     tic = time.time()
     model = simple_NIF(cfg, logger=writer, ckpt_save_path=save_path, visual=visual_1dwave) if cfg['model'] == 'nif_simple' else NIF_lastlayer(cfg['cfg_parameter_net'], cfg['cfg_shape_net']) if cfg['model'] == 'nif_lastlayer' else NIF_multiscale(cfg['cfg_parameter_net'], cfg['cfg_shape_net']) if cfg['model'] == 'nif_multiscale' else NotImplementedError('This model has not been implemented')
     cfg['training_cfg']['nb_params'] = count_params(model)
     print("model :", model)
     
-    model.fit(dataloader, n_epochs=cfg['training_cfg']['nepoch'], lr=cfg['training_cfg']['lr_init'], save_images_freq=cfg['training_cfg']['print_figure_epoch'], vistrain_datax = dataset[:][0], vistrain_datay=dataset[:][1])
+    model.fit(dataloader_train, n_epochs=cfg['training_cfg']['nepoch'], lr=cfg['training_cfg']['lr_init'],
+              validation_data=dataloader_test,
+              save_images_freq=cfg['training_cfg']['print_figure_epoch'], vistrain=dtrain[:], vistest=dtest[:])
 
     cfg['training_time'] = time.time() - tic
 

@@ -80,7 +80,7 @@ class PytorchNIF(nn.Module):
 
         return loss / len(dataloader)
 
-    def fit(self, dataloader, n_epochs, lr, validation_data=None, verbose=1, save_images_freq=None, save_criterion='mse', ckpt=None, save_model_freq=None, betas=(0.0, 0.99),  vistrain_datax=None, vistrain_datay=None, **kwargs):
+    def fit(self, dataloader, n_epochs, lr, validation_data=None, verbose=1, save_images_freq=None, save_criterion='mse', ckpt=None, save_model_freq=None, betas=(0.0, 0.99),  vistrain=None, vistest=None, **kwargs):
         assert self.model is not None, 'Model does not seem to have a model, assign the model to the self.model attribute'
         assert self.input_shape is not None, 'Could not find the input shape, please specify this attribute before fitting the model'
 
@@ -128,10 +128,9 @@ class PytorchNIF(nn.Module):
                 print('Epoch {:3d} training loss: {:1.4f} | Validation loss: {:1.4f} | Best epoch {:3d}'.format(
                     n, t_loss, v_loss, self.best_epoch))
 
-            print("save_images_freq :", save_images_freq)
-            print("self.visual_func :", self.visual_func)
             if save_images_freq is not None and n % save_images_freq == 0 and self.visual_func is not None: # TODO visual logs
-                self.visual_func(self.model, vistrain_datax, vistrain_datay, self.ckpt_save_path, 'train')
+                self.visual_func(self.model, vistrain[0], vistrain[1], self.ckpt_save_path, 'train')
+                self.visual_func(self.model, vistest[0], vistest[1], self.ckpt_save_path, 'test')
 
             if save_model_freq is not None and n % save_model_freq == 0 :
                 assert self.ckpt_save_path is not None, 'Need a path to save models'
