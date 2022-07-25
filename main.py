@@ -16,6 +16,7 @@ from datasets.wave_1d import Wave_1d
 from models.nif_lastlayer import NIF_lastlayer
 from models.nif_multiscale import NIF_multiscale
 from models.simple_nif import simple_NIF
+from utils.utils import count_params
 from utils.yaml import yaml2dict, dict2yaml
 
 def main(path):
@@ -43,12 +44,16 @@ def main(path):
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=cfg['training_cfg']['batch_size'], shuffle=True, num_workers=1)
 
     tic = time.time()
-    model = simple_NIF(cfg['cfg_parameter_net'], cfg['cfg_shape_net']) if cfg['model']=='nif_simple' else NIF_lastlayer(cfg['cfg_parameter_net'], cfg['cfg_shape_net']) if cfg['model']=='nif_lastlayer' else NIF_multiscale(cfg['cfg_parameter_net'], cfg['cfg_shape_net']) if cfg['model']=='nif_multiscale' else ValueError
+    model = simple_NIF(cfg, logger=writer) if cfg['model'] == 'nif_simple' else NIF_lastlayer(cfg['cfg_parameter_net'], cfg['cfg_shape_net']) if cfg['model'] == 'nif_lastlayer' else NIF_multiscale(cfg['cfg_parameter_net'], cfg['cfg_shape_net']) if cfg['model'] == 'nif_multiscale' else NotImplementedError('This model has not been implemented')
+    cfg['training_cfg']['nb_params'] = count_params(model)
+    print("model :", model)
+    
     model.fit(dataloader, n_epochs=cfg['training_cfg']['nepoch'], lr=cfg['training_cfg']['lr_init'], save_images_freq=cfg['training_cfg']['print_figure_epoch'])
 
     cfg['training_time'] = time.time() - tic
 
-    print("cfg, save_path :", cfg, save_path)
+    print("cfg : ", cfg)
+    print("save_path : ", save_path)
     dict2yaml(save_path + '/cfg.yaml', cfg)
 
     return True

@@ -24,8 +24,8 @@ class PytorchNIF(nn.Module):
 
         # /!\ the overriding class must implement a discriminator and a generator extending nn.Module
         self.input_shape = None
-        self.model       = None
-
+        self.model = None
+        
         # useful stuff that can be needed for during fit
         self.start_time = None
         self.verbose    = None
@@ -84,7 +84,7 @@ class PytorchNIF(nn.Module):
         assert self.input_shape is not None, 'Could not find the input shape, please specify this attribute before fitting the model'
 
         if self.opt_type == 'sgd':
-            self.optG = torch.optim.SGD(params=self.model.parameters(), lr=lr)
+            self.opt = torch.optim.SGD(params=self.model.parameters(), lr=lr)
         elif self.opt_type == 'adam':
             self.opt = torch.optim.Adam(params=self.model.parameters(), lr=lr, betas=betas)
         else:
@@ -128,10 +128,9 @@ class PytorchNIF(nn.Module):
                     n, t_loss, v_loss, self.best_epoch))
 
             # if save_images_freq is not None and n % save_images_freq == 0: # TODO visual logs
-            #     noise = torch.randn(32, self.lattent_space_size, device=self.device)
-            #     fake = self.generate(noise)
-            #     grid = make_grid(fake)
-            #     self.log.add_image('images', grid, n)
+            #     res = 0
+                # grid = make_grid(res)
+                # self.log.add_image('images', grid, n)
 
             if save_model_freq is not None and n % save_model_freq == 0 :
                 assert self.ckpt_save_path is not None, 'Need a path to save models'
