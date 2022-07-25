@@ -17,6 +17,7 @@ from models.nif_lastlayer import NIF_lastlayer
 from models.nif_multiscale import NIF_multiscale
 from models.simple_nif import simple_NIF
 from utils.utils import count_params
+from utils.visual import visual_1dwave
 from utils.yaml import yaml2dict, dict2yaml
 
 def main(path):
@@ -25,7 +26,7 @@ def main(path):
 
     logging.basicConfig(level=logging.INFO)
     start_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-    save_path = f"logs/{cfg['model']}-{cfg['dataset']}-{start_time}"
+    save_path = f"logs/{cfg['dataset']}/{cfg['model']}/{cfg['model']}-{cfg['dataset']}-{start_time}"
     writer = SummaryWriter(save_path)
 
     dict2yaml(save_path + '/cfg.yaml', cfg)
@@ -34,7 +35,7 @@ def main(path):
     # cfg['ckpt_save_path']    = None
 
     path = '../NIF_expe/datasets/data'
-    dataset = Wave_1d(path, cfg['data_cfg']['normalize'])
+    dataset = Wave_1d(path, normalize=cfg['data_cfg']['normalize'])
     print(dataset)
 
     torch.manual_seed(cfg['training_cfg']['seed'])
@@ -44,11 +45,11 @@ def main(path):
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=cfg['training_cfg']['batch_size'], shuffle=True, num_workers=1)
 
     tic = time.time()
-    model = simple_NIF(cfg, logger=writer) if cfg['model'] == 'nif_simple' else NIF_lastlayer(cfg['cfg_parameter_net'], cfg['cfg_shape_net']) if cfg['model'] == 'nif_lastlayer' else NIF_multiscale(cfg['cfg_parameter_net'], cfg['cfg_shape_net']) if cfg['model'] == 'nif_multiscale' else NotImplementedError('This model has not been implemented')
+    model = simple_NIF(cfg, logger=writer, ckpt_save_path=save_path, visual=visual_1dwave) if cfg['model'] == 'nif_simple' else NIF_lastlayer(cfg['cfg_parameter_net'], cfg['cfg_shape_net']) if cfg['model'] == 'nif_lastlayer' else NIF_multiscale(cfg['cfg_parameter_net'], cfg['cfg_shape_net']) if cfg['model'] == 'nif_multiscale' else NotImplementedError('This model has not been implemented')
     cfg['training_cfg']['nb_params'] = count_params(model)
     print("model :", model)
     
-    model.fit(dataloader, n_epochs=cfg['training_cfg']['nepoch'], lr=cfg['training_cfg']['lr_init'], save_images_freq=cfg['training_cfg']['print_figure_epoch'])
+    model.fit(dataloader, n_epochs=cfg['training_cfg']['nepoch'], lr=cfg['training_cfg']['lr_init'], save_images_freq=cfg['training_cfg']['print_figure_epoch'], vistrain_datax = dataset[:][0], vistrain_datay=dataset[:][1])
 
     cfg['training_time'] = time.time() - tic
 

@@ -50,16 +50,20 @@ class MLP_parametrized(nn.Module):
     def forward(self, x, out_hnet):
         cpt = 0
         b_size = out_hnet.shape[0]
-        dout = self.dim_in
+        # print("self.layers :", self.layers)
         for idx, (lp, lnext) in enumerate(zip([self.dim_in] + self.layers, self.layers + [self.dim_out])): # out_hnet : torch.Size([512, 1951])
-            din = dout
-            dout = self.layers[idx+1]
+            din = lp
+            dout = lnext
+            # print("din, dout :", din, dout)
             W = out_hnet[:, cpt:cpt + din * dout].reshape(b_size, dout, din) # torch.Size([512, 1951])
             cpt += din * dout
             b = out_hnet[:, cpt:cpt + dout] # torch.Size([512, 1951])
             cpt += dout
             x = torch.einsum('bi, bji -> bj', x, W) + b
-            if idx != self.nlayers - 2: # stop at last layer between layer[n-1] and dim_out
+            # print("x.shape :", x.shape)
+            # print("idx :", idx)
+            # print("self.nlayers :", self.nlayers)
+            if idx != self.nlayers: # stop at last layer between layer[n-1] and dim_out
                 x = self.act(x)
-            if idx == self.nlayers - 2:
+            if idx == self.nlayers:
                 return x

@@ -26,7 +26,7 @@ training_cfg:
   enable_multi_gpu: false
   lr_init: 0.005
   nepoch: 10
-  print_figure_epoch: 10
+  print_figure_epoch: 2
   ckpt_epoch: 0
   ckpt_path: logs/1dwave/run_NIF_1dwave_20220630-121818/
   seed: 0
