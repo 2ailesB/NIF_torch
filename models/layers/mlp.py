@@ -20,7 +20,6 @@ class MLP(nn.Module):
             nn.Sequential(nn.Linear(lp, lnext), nn.Dropout(dropout_rate))
             for lp, lnext in zip([in_features] + self.layers, self.layers + [out_features])
             ])
-            # bias_initializer=initializers.TruncatedNormal(stddev=0.1)
         self.model.apply(init_weights_truncNorm)
         self.act = torch.nn.ReLU() if activation == 'relu' else torch.nn.Tanh() if activation == 'tanh' else torch.nn.Sigmoid() if activation == 'sigmoid' else torch.nn.GELU() if activation == 'gelu' else torch.nn.SiLU() if activation == 'swish' else ValueError
 
