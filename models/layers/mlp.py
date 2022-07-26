@@ -63,6 +63,7 @@ class MLP_parametrized(nn.Module):
             # print("x.shape :", x.shape)
             # print("idx :", idx)
             # print("self.nlayers :", self.nlayers)
+            # print("cpt :", cpt)
             if idx != self.nlayers: # stop at last layer between layer[n-1] and dim_out
                 x = self.act(x)
             if idx == self.nlayers:

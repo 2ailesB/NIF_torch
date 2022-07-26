@@ -45,7 +45,6 @@ class NIF(nn.Module):
     def forward(self, x):
         x_parameter = x[:, :self.cfg_parameter_net['input_dim']]
         x_shape = x[:, -self.cfg_shape_net['input_dim']:] # [bxatch-size, input dim]
-
         y1 = self.parameter_net(x_parameter) # [bxatch-size, input dim]
         # print("y1.shape :", y1.shape)
         rom = self.hnet(y1) # [bxatch-size, latent dim]

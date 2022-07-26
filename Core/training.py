@@ -33,6 +33,7 @@ class PytorchNIF(nn.Module):
         self.n_epochs   = None
         self.n          = None
         self.tag        = tag
+        self.scheduler  = None
 
         self.save_images_freq = None
 
@@ -48,10 +49,13 @@ class PytorchNIF(nn.Module):
 
             # Compute the loss the for the discriminator with real images
             self.model.zero_grad()
-            yhat = self.model(batch_x).view(-1)
+            yhat = self.model(batch_x) # .view(-1)
             loss = self.criterion(yhat, batch_y)
             loss.backward()
             self.opt.step()
+            
+            if self.scheduler is not None:
+                self.opt.param_groups[0]['lr'] = self.scheduler(self.n, self.lr)
 
             # Update running losses
             epoch_loss += loss.item()
@@ -70,7 +74,7 @@ class PytorchNIF(nn.Module):
 
             # Compute the loss the for the discriminator with real images
             self.model.zero_grad()
-            yhat = self.model(batch_x).view(-1)
+            yhat = self.model(batch_x) # .view(-1)
             loss = self.criterion(yhat, batch_y)
 
             # Update running losses
@@ -80,7 +84,7 @@ class PytorchNIF(nn.Module):
 
         return loss / len(dataloader)
 
-    def fit(self, dataloader, n_epochs, lr, validation_data=None, verbose=1, save_images_freq=None, save_criterion='mse', ckpt=None, save_model_freq=None, betas=(0.0, 0.99),  vistrain=None, vistest=None, **kwargs):
+    def fit(self, dataloader, n_epochs, lr, scheduler=None, validation_data=None, verbose=1, save_images_freq=None, save_criterion='mse', ckpt=None, save_model_freq=None, betas=(0.0, 0.99),  vistrain=None, vistest=None, **kwargs):
         assert self.model is not None, 'Model does not seem to have a model, assign the model to the self.model attribute'
         assert self.input_shape is not None, 'Could not find the input shape, please specify this attribute before fitting the model'
 
@@ -96,6 +100,8 @@ class PytorchNIF(nn.Module):
 
         start_epoch = 0
         self.verbose = verbose
+        self.scheduler = scheduler
+        self.lr = lr
 
         if ckpt:
             state = torch.load(ckpt)

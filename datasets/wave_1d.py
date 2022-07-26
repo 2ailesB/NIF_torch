@@ -10,7 +10,7 @@ class Wave_1d(Dataset) : #héritage de classe Dataset de Pytorch
         super().__init__()
 
         data = np.load(path + '/traveling_wave.npz')['data']
-        datax = data[start:end, [0, 1]] # TODO
+        datax = data[start:end, [0, 1]] 
         datay = data[start:end, [2]]
 
         self.datax = torch.tensor(datax).float()#.view(size) permet de modifier la shape et d'utiliser le même espace de stockage
