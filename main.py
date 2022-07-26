@@ -5,7 +5,7 @@ import logging
 import datetime
 import matplotlib.pyplot as plt
 import numpy as np
-import pathlib2 as Path
+# import pathlib2 as Path
 import time
 import torchvision.datasets as dset
 import torchvision.transforms as transforms
@@ -52,7 +52,7 @@ def main(path):
     print("model :", model)
     
     model.fit(dataloader_train, n_epochs=cfg['training_cfg']['nepoch'], lr=cfg['training_cfg']['lr_init'],
-              validation_data=dataloader_test,
+              validation_data=dataloader_test, verbose=100,
               save_images_freq=cfg['training_cfg']['print_figure_epoch'], vistrain=dtrain[:], vistest=dtest[:])
 
     cfg['training_time'] = time.time() - tic
