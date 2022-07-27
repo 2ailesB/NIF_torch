@@ -34,7 +34,7 @@ class SIREN(nn.Module):
         return torch.sin(self.omega_0 * self.linear(input))
 
 class SIREN_parametrized(nn.Module):
-    def __init__(self, in_features, out_features, layers=None, activation='gelu', dropout_rate=0.0, **kwargs):
+    def __init__(self, in_features, out_features, layers=None, dropout_rate=0.0, **kwargs):
         """
         Usual SIREN module
         :param in_features: number of input features
@@ -49,7 +49,7 @@ class SIREN_parametrized(nn.Module):
         self.dim_in = in_features
         self.dim_out = out_features
         
-        self.act = torch.sin()
+        # self.act = torch.sin() # TODO
 
     def forward(self, x, out_hnet):
         cpt = 0
@@ -69,6 +69,6 @@ class SIREN_parametrized(nn.Module):
             # print("self.nlayers :", self.nlayers)
             # print("cpt :", cpt)
             if idx != self.nlayers: # stop at last layer between layer[n-1] and dim_out
-                x = self.act(x)
+                x = torch.sin(x) # self.act
             if idx == self.nlayers:
                 return x

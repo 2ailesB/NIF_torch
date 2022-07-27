@@ -15,9 +15,9 @@ class multiscale_NIF(PytorchNIF):
         self.cfg_shape_net = cfg['cfg_shape_net']
 
         self.cfg_shape_net['layers'] =[self.cfg_shape_net['units']]*(self.cfg_shape_net['nlayers'] + 1)
-        self.cfg_shape_net['type'] = 'mlp'
+        self.cfg_shape_net['type'] = 'siren'
         self.cfg_parameter_net['layers'] = [self.cfg_parameter_net['units']]*(self.cfg_parameter_net['nlayers'] + 1)
-        self.cfg_parameter_net['type'] = 'siren'
+        self.cfg_parameter_net['type'] = 'mlp'
         
         self.model = NIF(self.cfg_parameter_net, self.cfg_shape_net)
         self.input_shape = self.cfg_parameter_net['input_dim'] + self.cfg_shape_net['input_dim']

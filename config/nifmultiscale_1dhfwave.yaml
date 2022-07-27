@@ -1,4 +1,4 @@
-model: NIF_multiscale
+model: nif_multiscale
 dataset: 1dhfwave
 data_cfg:
   train_samples: 1600

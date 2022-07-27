@@ -50,8 +50,7 @@ def main(path):
     dataloader_test = torch.utils.data.DataLoader(dtest, batch_size=cfg['training_cfg']['batch_size'], shuffle=True, num_workers=1)
 
     tic = time.time()
-    model = simple_NIF(cfg, logger=writer, ckpt_save_path=save_path, visual=visual_1dwave) if cfg['model'] == 'nif_simple' else NIF_lastlayer(cfg['cfg_parameter_net'], cfg['cfg_shape_net']) if cfg['model'] == 'nif_lastlayer' else NIF_multiscale(cfg['cfg_parameter_net'], cfg['cfg_shape_net']) if cfg['model'] == 'nif_multiscale' else NotImplementedError('This model has not been implemented')
-    # model = multiscale_NIF(cfg, logger=writer, ckpt_save_path=save_path, visual=visual_1dwave) if cfg['model'] == 'nif_simple' else NIF_lastlayer(cfg['cfg_parameter_net'], cfg['cfg_shape_net']) if cfg['model'] == 'nif_lastlayer' else NIF_multiscale(cfg['cfg_parameter_net'], cfg['cfg_shape_net']) if cfg['model'] == 'nif_multiscale' else NotImplementedError('This model has not been implemented')
+    model = simple_NIF(cfg, logger=writer, ckpt_save_path=save_path, visual=visual_1dwave) if cfg['model'] == 'nif_simple' else NIF_lastlayer(cfg['cfg_parameter_net'], cfg['cfg_shape_net']) if cfg['model'] == 'nif_lastlayer' else multiscale_NIF(cfg, logger=writer, ckpt_save_path=save_path, visual=visual_1dwave) if cfg['model'] == 'nif_multiscale' else NotImplementedError('This model has not been implemented')
     cfg['training_cfg']['nb_params'] = count_params(model)
     print("model :", model)
     
@@ -69,4 +68,5 @@ def main(path):
 
 if __name__ == "__main__":
     cfg_path = 'config/nif_1dwave.yaml'
+    cfg_path = 'config/nifmultiscale_1dhfwave.yaml'
     print(main(cfg_path))
