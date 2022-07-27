@@ -13,8 +13,9 @@ import torchvision.utils as vutils
 from torch.utils.tensorboard import SummaryWriter
 
 from datasets.wave_1d import Wave_1d
+from datasets.wave_hf1d import Wave_1dhf
 from models.nif_lastlayer import NIF_lastlayer
-from models.nif_multiscale import NIF_multiscale
+from models.nif_multiscale import multiscale_NIF
 from models.simple_nif import simple_NIF
 from utils.utils import count_params
 from utils.visual import visual_1dwave
@@ -37,6 +38,8 @@ def main(path):
     path = '../NIF_expe/datasets/data'
     dtrain = Wave_1d(path, 0, 1600, normalize=cfg['data_cfg']['normalize'])
     dtest = Wave_1d(path, 1600, 2000, normalize=cfg['data_cfg']['normalize'])
+    dtrain = Wave_1dhf(path, 0, 1600, normalize=cfg['data_cfg']['normalize'])
+    dtest = Wave_1dhf(path, 1600, 2000, normalize=cfg['data_cfg']['normalize'])
     print(dtrain)
 
     torch.manual_seed(cfg['training_cfg']['seed'])
@@ -48,6 +51,7 @@ def main(path):
 
     tic = time.time()
     model = simple_NIF(cfg, logger=writer, ckpt_save_path=save_path, visual=visual_1dwave) if cfg['model'] == 'nif_simple' else NIF_lastlayer(cfg['cfg_parameter_net'], cfg['cfg_shape_net']) if cfg['model'] == 'nif_lastlayer' else NIF_multiscale(cfg['cfg_parameter_net'], cfg['cfg_shape_net']) if cfg['model'] == 'nif_multiscale' else NotImplementedError('This model has not been implemented')
+    # model = multiscale_NIF(cfg, logger=writer, ckpt_save_path=save_path, visual=visual_1dwave) if cfg['model'] == 'nif_simple' else NIF_lastlayer(cfg['cfg_parameter_net'], cfg['cfg_shape_net']) if cfg['model'] == 'nif_lastlayer' else NIF_multiscale(cfg['cfg_parameter_net'], cfg['cfg_shape_net']) if cfg['model'] == 'nif_multiscale' else NotImplementedError('This model has not been implemented')
     cfg['training_cfg']['nb_params'] = count_params(model)
     print("model :", model)
     

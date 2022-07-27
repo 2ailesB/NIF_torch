@@ -21,7 +21,7 @@ class SIREN(nn.Module):
         self.in_features = in_features
         self.linear = nn.Linear(in_features, out_features, bias=bias)
 
-        self.init_weights()
+        self.init_weights() 
 
     def init_weights(self):
         with torch.no_grad():
@@ -49,20 +49,26 @@ class SIREN_parametrized(nn.Module):
         self.dim_in = in_features
         self.dim_out = out_features
         
-        self.act = torch.sin() # TODO : init weight ? 
+        self.act = torch.sin()
 
     def forward(self, x, out_hnet):
         cpt = 0
-        W = out_hnet[0:self.dim_in * self.layers[0]]
-        cpt = self.dim_in * self.layers[0]
-        b = out_hnet[cpt : cpt + self.layers[0]] # TODO : if first layer/ last layer
-        cpt += self.layers[0]
-        for idx, layer in enumerate(self.layers):
-            W = out_hnet[cpt:cpt + self.layers[idx] * self.layers[idx + 1]]
-            cpt += self.layers[idx] * self.layers[idx + 1]
-            b = out_hnet[cpt:cpt + self.layers[idx + 1]]
-            cpt += self.layers[idx + 1]
-            x = F.linear(x, W, b)
-            if idx != self.nlayers - 1:
+        b_size = out_hnet.shape[0]
+        # print("self.layers :", self.layers)
+        for idx, (lp, lnext) in enumerate(zip([self.dim_in] + self.layers, self.layers + [self.dim_out])): # out_hnet : torch.Size([512, 1951])
+            din = lp
+            dout = lnext
+            # print("din, dout :", din, dout)
+            W = out_hnet[:, cpt:cpt + din * dout].reshape(b_size, dout, din) # torch.Size([512, 1951])
+            cpt += din * dout
+            b = out_hnet[:, cpt:cpt + dout] # torch.Size([512, 1951])
+            cpt += dout
+            x = torch.einsum('bi, bji -> bj', x, W) + b
+            # print("x.shape :", x.shape)
+            # print("idx :", idx)
+            # print("self.nlayers :", self.nlayers)
+            # print("cpt :", cpt)
+            if idx != self.nlayers: # stop at last layer between layer[n-1] and dim_out
                 x = self.act(x)
-        return x
+            if idx == self.nlayers:
+                return x
