@@ -93,11 +93,11 @@ class MLP4SIREN(nn.Module):
         self.cfg_shape_net = cfg_shape_net
         self.somega_0 = self.cfg_shape_net['omega_0']
         self.sweight_init_factor = self.cfg_shape_net['weight_init_factor']
-        self.swidth = self.cfg_shape_net['unit']
+        self.swidth = self.cfg_shape_net['units']
         self.snlayers = self.cfg_shape_net['nlayers']
         self.sinput_dim = self.cfg_shape_net['input_dim']
         self.soutput_dim = self.cfg_shape_net['output_dim']
-        self.model.apply(self.init_weight_hnetsiren)
+        self.init_weight_hnetsiren
 
         self.act = torch.nn.ReLU() if activation == 'relu' else torch.nn.Tanh() if activation == 'tanh' else torch.nn.Sigmoid() if activation == 'sigmoid' else torch.nn.GELU() if activation == 'gelu' else torch.nn.SiLU() if activation == 'swish' else ValueError
 
@@ -109,9 +109,9 @@ class MLP4SIREN(nn.Module):
         x = self.model(x)
         return x
 
-    def init_weight_hnetsiren(self, m):
-        if isinstance(m, nn.Linear):
-            torch.nn.init.uniform_(m.weight, a=-torch.sqrt(6/self.sinput_dim)*self.sweight_init_factor, b=torch.sqrt(6/self.sinput_dim)*self.sweight_init_factor)
+    def init_weight_hnetsiren(self):
+        if isinstance(self.model, nn.Linear):
+            torch.nn.init.uniform_(self.model.weight, a=-torch.sqrt(6/self.sinput_dim)*self.sweight_init_factor, b=torch.sqrt(6/self.sinput_dim)*self.sweight_init_factor)
 
             num_weight_first = self.sinput_dim*self.swidth
             num_weight_hidden = self.snlayers*(self.swidth**2)

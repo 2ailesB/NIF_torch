@@ -45,6 +45,7 @@ class PytorchNIF(nn.Module):
 
             batch_x, batch_y = batch
             batch_x = batch_x.to(self.device)
+            batch_y = batch_y.to(self.device)
             batch_size = batch_x.size(0)
 
             # Compute the loss the for the discriminator with real images
@@ -70,6 +71,7 @@ class PytorchNIF(nn.Module):
         for idx, batch in enumerate(dataloader):
             batch_x, batch_y = batch
             batch_x = batch_x.to(self.device)
+            batch_y = batch_y.to(self.device)
             batch_size = batch_x.size(0)
 
             # Compute the loss the for the discriminator with real images
@@ -135,8 +137,8 @@ class PytorchNIF(nn.Module):
                     n, t_loss, v_loss, self.best_epoch))
 
             if save_images_freq is not None and n % save_images_freq == 0 and self.visual_func is not None: # TODO visual logs
-                self.visual_func(self.model, vistrain[0], vistrain[1], self.ckpt_save_path, 'train')
-                self.visual_func(self.model, vistest[0], vistest[1], self.ckpt_save_path, 'test')
+                self.visual_func(self.model, vistrain[0].to(self.device), vistrain[1], self.ckpt_save_path, 'train')
+                self.visual_func(self.model, vistest[0].to(self.device), vistest[1], self.ckpt_save_path, 'test')
 
             if save_model_freq is not None and n % save_model_freq == 0 :
                 assert self.ckpt_save_path is not None, 'Need a path to save models'

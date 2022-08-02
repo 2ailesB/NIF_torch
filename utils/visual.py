@@ -3,15 +3,15 @@ import numpy as np
 
 def visual_1dwave(model, datax, datay, path, mode):
     nsamples = datax.shape[0]
-    xx = datax[:, 0].reshape(int(nsamples/200), 200)
-    tt = datax[:, 1].reshape(int(nsamples/200), 200)
+    xx = datax[:, 0].reshape(int(nsamples/200), 200).to('cpu')
+    tt = datax[:, 1].reshape(int(nsamples/200), 200).to('cpu')
     # xx, tt = np.meshgrid(x, t)
     # print("xx.shape :", xx.shape)
     # print("datax.shape :", datax.shape)
     # print("model(datax).shape :", model(datax).shape)
 
     u_pred = model(
-    datax).reshape(int(nsamples/200), 200).detach()
+    datax).reshape(int(nsamples/200), 200).detach().to('cpu')
     datay = datay.reshape(int(nsamples/200), 200)
     fig, axs = plt.subplots(1, 3, figsize=(16, 4))
     im1 = axs[0].contourf(tt, xx, datay.reshape(
