@@ -21,7 +21,7 @@ class PytorchNIF(nn.Module):
 
         self.best_criterion = {'train_loss': 10**10, 'val_loss': 10**10, 'mse':10*10}
         self.best_model = None
-        self.best_epoch = None
+        self.best_epoch = 0
 
         # /!\ the overriding class must implement a discriminator and a generator extending nn.Module
         self.input_shape = None

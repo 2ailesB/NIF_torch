@@ -39,7 +39,7 @@ class NIF(nn.Module):
             self.shape_net = MLP_parametrized(self.cfg_shape_net['input_dim'], self.cfg_shape_net['output_dim'], self.cfg_shape_net['layers'], self.cfg_shape_net['activation'])
         elif self.cfg_shape_net['type']=='siren':
             self.hnet = MLP4SIREN(self.cfg_hnet['dim_in'], self.cfg_hnet['dim_out'], self.cfg_shape_net) #TODO
-            self.shape_net = SIREN_parametrized(self.cfg_shape_net['input_dim'], self.cfg_shape_net['output_dim'], self.cfg_shape_net['layers'])
+            self.shape_net = SIREN_parametrized(self.cfg_shape_net['input_dim'], self.cfg_shape_net['output_dim'], self.cfg_shape_net['layers'], omega_0=self.cfg_shape_net['omega_0'])
         else :
             raise NotImplementedError('NIF not implemented for this kind of layer, please use mlp or siren')
 
