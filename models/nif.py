@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from models.layers.mlp import MLP, MLP_parametrized
+from models.layers.mlp import MLP, MLP_parametrized, MLP4SIREN
 from models.layers.siren import SIREN, SIREN_parametrized
 
 class NIF(nn.Module):
@@ -38,9 +38,12 @@ class NIF(nn.Module):
         if self.cfg_shape_net['type'] =='mlp':
             self.shape_net = MLP_parametrized(self.cfg_shape_net['input_dim'], self.cfg_shape_net['output_dim'], self.cfg_shape_net['layers'], self.cfg_shape_net['activation'])
         elif self.cfg_shape_net['type']=='siren':
+            self.hnet = MLP4SIREN(self.cfg_hnet['dim_in'], self.cfg_hnet['dim_out'], self.cfg_shape_net) #TODO
             self.shape_net = SIREN_parametrized(self.cfg_shape_net['input_dim'], self.cfg_shape_net['output_dim'], self.cfg_shape_net['layers'])
         else :
             raise NotImplementedError('NIF not implemented for this kind of layer, please use mlp or siren')
+
+        
 
     def forward(self, x):
         x_parameter = x[:, :self.cfg_parameter_net['input_dim']]
