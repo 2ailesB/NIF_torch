@@ -11,11 +11,11 @@ import torchvision.datasets as dset
 import torchvision.transforms as transforms
 import torchvision.utils as vutils
 from torch.utils.tensorboard import SummaryWriter
-from datasets.cylinderflow import Cylinder
 
 from datasets.wave_1d import Wave_1d
 from datasets.wave_hf1d import Wave_1dhf
-from models.nif_lastlayer import NIF_lastlayer, lastlayer_NIF
+from datasets.cylinderflow import Cylinder
+from models.nif_lastlayer import lastlayer_NIF
 from models.nif_multiscale import multiscale_NIF
 from models.simple_nif import simple_NIF
 from utils.utils import count_params

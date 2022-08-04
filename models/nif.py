@@ -91,6 +91,9 @@ class NIF_DO(nn.Module):
         self.last_layer_bias = nn.Parameter(torch.distributions.nor(stddev=0.1)) # TODO check
         torch.nn.init.trunc_normal_(self.last_layer_bias, std=0.1)
 
+        print("here!!!!! \n\n :")
+        print("self.last_layer_bias.dtype :", self.last_layer_bias.dtype)
+
         
 
     def forward(self, x):

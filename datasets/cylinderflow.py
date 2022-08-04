@@ -19,7 +19,7 @@ class Cylinder(Dataset) : #héritage de classe Dataset de Pytorch
 
         self.mode = 'train'*train + 'val'*(1-train)
 
-        self.sample_weight = data.sample_weight
+        self.sample_weight = data[start:end, -1:]
 
         if normalize == 'standard':
             self.datax, datax_means, datax_stds = std_normalize(self.datax)
