@@ -1,4 +1,4 @@
-def scheduler(epoch, lr):
+def nif_scheduler(epoch, lr):
     if epoch < 1000:
         return lr
     elif epoch < 2000:

@@ -20,6 +20,7 @@ from models.simple_nif import simple_NIF
 from utils.utils import count_params
 from utils.visual import visual_1dwave
 from utils.yaml import yaml2dict, dict2yaml
+from utils.scheduler import nif_scheduler
 
 def main(path):
 
@@ -55,7 +56,7 @@ def main(path):
     print("model :", model)
     
     model.fit(dataloader_train, n_epochs=cfg['training_cfg']['nepoch'], lr=cfg['training_cfg']['lr_init'],
-              validation_data=dataloader_test, verbose=100,
+              scheduler = nif_scheduler, validation_data=dataloader_test, verbose=100,
               save_images_freq=cfg['training_cfg']['print_figure_epoch'], vistrain=dtrain[:], vistest=dtest[:])
 
     cfg['training_time'] = time.time() - tic

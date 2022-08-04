@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import numpy as np
 
 from utils.init import init_weights_truncNorm
 
@@ -97,7 +98,7 @@ class MLP4SIREN(nn.Module):
         self.snlayers = self.cfg_shape_net['nlayers']
         self.sinput_dim = self.cfg_shape_net['input_dim']
         self.soutput_dim = self.cfg_shape_net['output_dim']
-        self.init_weight_hnetsiren
+        self.init_weight_hnetsiren()
 
         self.act = torch.nn.ReLU() if activation == 'relu' else torch.nn.Tanh() if activation == 'tanh' else torch.nn.Sigmoid() if activation == 'sigmoid' else torch.nn.GELU() if activation == 'gelu' else torch.nn.SiLU() if activation == 'swish' else ValueError
 
@@ -111,7 +112,8 @@ class MLP4SIREN(nn.Module):
 
     def init_weight_hnetsiren(self):
         if isinstance(self.model, nn.Linear):
-            torch.nn.init.uniform_(self.model.weight, a=-torch.sqrt(6/self.sinput_dim)*self.sweight_init_factor, b=torch.sqrt(6/self.sinput_dim)*self.sweight_init_factor)
+            weight_dist = torch.distributions.uniform.Uniform(-np.sqrt(6/self.sinput_dim)*self.sweight_init_factor, np.sqrt(6/self.sinput_dim)*self.sweight_init_factor)
+            self.model.weight.data = nn.Parameter(weight_dist.sample(self.model.weight.data.shape))
 
             num_weight_first = self.sinput_dim*self.swidth
             num_weight_hidden = self.snlayers*(self.swidth**2)
@@ -120,12 +122,13 @@ class MLP4SIREN(nn.Module):
             scale_matrix = torch.ones((self.out_features))
             scale_matrix[:num_weight_first] /= self.sinput_dim  # 1st layer weights
             scale_matrix[num_weight_first:
-                        num_weight_first + num_weight_hidden] *= torch.sqrt(6.0/self.swidth)/self.somega_0  # hidden layer weights
+                        num_weight_first + num_weight_hidden] *= np.sqrt(6.0/self.swidth)/self.somega_0  # hidden layer weights
             scale_matrix[num_weight_first + num_weight_hidden:
-                        num_weight_first + num_weight_hidden + num_weight_last] *= torch.sqrt(6.0/(self.swidth + self.swidth))  # last layer weights, since it is linear layer and no scaling,
+                        num_weight_first + num_weight_hidden + num_weight_last] *= np.sqrt(6.0/(self.swidth + self.swidth)) # last layer weights, since it is linear layer and no scaling,
             # we choose GlorotUniform
             scale_matrix[num_weight_first + num_weight_hidden + num_weight_last:] /= self.swidth  # all biases
-
-            self.model.bias.data = nn.Parameter(torch.distributions.uniform(-scale_matrix, scale_matrix))
+      
+            bias_dist = torch.distributions.uniform.Uniform(-scale_matrix, scale_matrix)
+            self.model.bias.data = nn.Parameter(bias_dist.sample())
             
-        
+            
