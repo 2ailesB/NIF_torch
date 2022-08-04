@@ -50,9 +50,9 @@ class NIF(nn.Module):
         x_shape = x[:, -self.cfg_shape_net['input_dim']:] # [bxatch-size, input dim]
         y1 = self.parameter_net(x_parameter) # [bxatch-size, input dim]
         # print("y1.shape :", y1.shape)
-        rom = self.hnet(y1) # [bxatch-size, latent dim]
-        # print("rom.shape :", rom.shape)
-        yhat = self.shape_net(x_shape, rom) # [bxatch-size, hnet out]
+        sweights = self.hnet(y1) # [bxatch-size, latent dim]
+        # print("sweights.shape :", sweights.shape)
+        yhat = self.shape_net(x_shape, sweights) # [bxatch-size, hnet out]
         # print("yhat.shape :", yhat.shape)
 
         return yhat
@@ -68,16 +68,9 @@ class NIF_DO(nn.Module):
         self.cfg_parameter_net = cfg_parameter_net
         self.input_shape = cfg_parameter_net['input_dim'] + cfg_shape_net['input_dim']
 
-        # compute the number of weights to be computed by parameter net
-        nweights = self.cfg_shape_net['input_dim'] * self.cfg_shape_net['units'] + \
-                self.cfg_shape_net['units'] * self.cfg_shape_net['units'] * self.cfg_shape_net['nlayers'] + \
-                self.cfg_shape_net['units'] * self.cfg_shape_net['output_dim']
-        nbias = self.cfg_shape_net['units'] + \
-                self.cfg_shape_net['units'] * self.cfg_shape_net['nlayers'] + \
-                self.cfg_shape_net['output_dim']
         # in_features, out_features, layers=None, activation='gelu'
         self.cfg_hnet = dict()
-        self.cfg_hnet['dim_out'] = nweights + nbias
+        self.cfg_hnet['dim_out'] = self.cfg_parameter_net['latent_dim'] 
         self.cfg_hnet['dim_in'] = self.cfg_parameter_net['latent_dim'] 
         self.hnet = MLP(self.cfg_hnet['dim_in'], self.cfg_hnet['dim_out']) #TODO
         
@@ -87,13 +80,16 @@ class NIF_DO(nn.Module):
             self.parameter_net = SIREN(self.cfg_parameter_net['input_dim'], self.cfg_parameter_net['latent_dim'], self.cfg_parameter_net['layers'], self.cfg_parameter_net['activation'])
         else :
             raise NotImplementedError('NIF not implemented for this kind of layer, please use mlp or siren')
-        if self.cfg_parameter_net['type'] =='mlp':
-            self.parameter_net = MLP(self.cfg_parameter_net['input_dim'], self.cfg_parameter_net['latent_dim'], self.cfg_parameter_net['layers'], self.cfg_parameter_net['activation'])
-        elif self.cfg_parameter_net['type'] == 'siren' :
+        if self.cfg_shape_net['type'] =='mlp':
+            self.parameter_net = MLP(self.cfg_shape_net['input_dim'], self.cfg_parameter_net['latent_dim']*self.cfg_shape_net['output_dim'], self.cfg_shape_net['layers'], self.cfg_shape_net['activation'])
+        elif self.cfg_shape_net['type'] == 'siren' :
             self.hnet = MLP4SIREN(self.cfg_hnet['dim_in'], self.cfg_hnet['dim_out'], self.cfg_shape_net) #TODO
-            self.parameter_net = SIREN(self.cfg_parameter_net['input_dim'], self.cfg_parameter_net['latent_dim'], self.cfg_parameter_net['layers'], self.cfg_parameter_net['activation'])
+            self.parameter_net = SIREN(self.cfg_shape_net['input_dim'], self.cfg_parameter_net['latent_dim']*self.cfg_shape_net['output_dim'], self.cfg_shape_net['layers'], self.cfg_shape_net['activation'])
         else :
             raise NotImplementedError('NIF not implemented for this kind of layer, please use mlp or siren')
+
+        self.last_layer_bias = nn.Parameter(torch.distributions.nor(stddev=0.1)) # TODO check
+        torch.nn.init.trunc_normal_(self.last_layer_bias, std=0.1)
 
         
 
@@ -102,10 +98,11 @@ class NIF_DO(nn.Module):
         x_shape = x[:, -self.cfg_shape_net['input_dim']:] # [bxatch-size, input dim]
         y1 = self.parameter_net(x_parameter) # [bxatch-size, input dim]
         # print("y1.shape :", y1.shape)
-        rom = self.hnet(y1) # [bxatch-size, latent dim]
+        llweights = self.hnet(y1) # [bxatch-size, latent dim]
         # print("rom.shape :", rom.shape)
-        yhat = self.shape_net(x_shape, rom) # [bxatch-size, hnet out]
+        llval = self.shape_net(x_shape).reshape((self.cfg_shape_net['output_dim'], self.cfg_parameter_net['latent_dim'])) # [bxatch-size, hnet out]
         # print("yhat.shape :", yhat.shape)
+        yhat = llval @ llweights[:, :self.cfg_shape_net['output_dim']*self.cfg_parameter_net['latent_dim']] + self.last_layer_bias
 
         return yhat
 

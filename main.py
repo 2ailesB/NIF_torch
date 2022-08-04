@@ -14,7 +14,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 from datasets.wave_1d import Wave_1d
 from datasets.wave_hf1d import Wave_1dhf
-from models.nif_lastlayer import NIF_lastlayer
+from models.nif_lastlayer import NIF_lastlayer, lastlayer_NIF
 from models.nif_multiscale import multiscale_NIF
 from models.simple_nif import simple_NIF
 from utils.utils import count_params
@@ -51,7 +51,7 @@ def main(path):
     dataloader_test = torch.utils.data.DataLoader(dtest, batch_size=cfg['training_cfg']['batch_size'], shuffle=True, num_workers=1)
 
     tic = time.time()
-    model = simple_NIF(cfg, logger=writer, device = cfg['device'], ckpt_save_path=save_path, visual=visual_1dwave) if cfg['model'] == 'nif_simple' else multiscale_NIF(cfg, logger=writer, device=cfg['device'], ckpt_save_path=save_path, visual=visual_1dwave) if cfg['model'] == 'nif_multiscale' else NotImplementedError('This model has not been implemented')
+    model = simple_NIF(cfg, logger=writer, device = cfg['device'], ckpt_save_path=save_path, visual=visual_1dwave) if cfg['model'] == 'nif_simple' else multiscale_NIF(cfg, logger=writer, device=cfg['device'], ckpt_save_path=save_path, visual=visual_1dwave) if cfg['model'] == 'nif_multiscale' else lastlayer_NIF(cfg, logger=writer, device=cfg['device'], ckpt_save_path=save_path, visual=visual_1dwave) if cfg['model'] == 'nif_lastlayer' else NotImplementedError('This model has not been implemented')
     cfg['training_cfg']['nb_params'] = count_params(model)
     print("model :", model)
     

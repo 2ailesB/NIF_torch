@@ -1,4 +1,4 @@
-model: nif_multiscaleLastLayerParametrized
+model: nif_lastlayer
 dataset: cylinder
 data_cfg:
   train_timesteps: 16
