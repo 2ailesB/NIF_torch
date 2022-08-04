@@ -20,11 +20,11 @@ class Wave_1dhf(Dataset) : #héritage de classe Dataset de Pytorch
         self.mode = 'train'*train + 'val'*(1-train)
 
         if normalize == 'standard':
-            self.datax = std_normalize(self.datax)
-            self.datay = std_normalize(self.datay)
+            self.datax, _, _ = std_normalize(self.datax)
+            self.datay, _, _ = std_normalize(self.datay)
         elif normalize == 'minmax':
-            self.datax = minimax_normalize(self.datax)
-            self.datay = minimax_normalize(self.datay)
+            self.datax, _, _ = minimax_normalize(self.datax)
+            self.datay, _, _ = minimax_normalize(self.datay)
         else :
             raise NotImplementedError('Normalization not implemented')
 

@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import torch
 
 def visual_1dwave(model, datax, datay, path, mode):
     nsamples = datax.shape[0]
@@ -33,4 +34,59 @@ def visual_1dwave(model, datax, datay, path, mode):
     plt.savefig(path + f'/vis_{mode}.png')
     plt.close()
     plt.clf()
+    return True
+
+def visual_cylinder(model, datax, datay, path, mode):
+
+    data = torch.cat((datax, datay), dim=1)
+    stds = data.std(0)
+    means = data.mean(0)
+
+    uv_pred = model.predict(datax[:, 0:3])  # (300, 2)
+    u_pred = uv_pred[:, 0] * stds[3] + means[3]
+    v_pred = uv_pred[:, 1] * stds[4] + means[4]
+    circle = plt.Circle((0, 0), 0.0035, color='grey')
+    fig, axs = plt.subplots(2, 3, figsize=(16, 4))
+    plt.set_cmap('PRGn')
+    im1 = axs[0, 0].tricontourf(datax[:, 1].flatten() * stds[1] + means[1], datax[:, 2].flatten() * stds[2] + means[2],
+                                datay[:, 0] * stds[3] + means[3], vmin=-5, vmax=5, levels=50)  # , cmap='seismic')
+    axs[0, 0].add_patch(circle)
+    plt.colorbar(im1, ax=axs[0, 0])
+    im2 = axs[0, 1].tricontourf(datax[:, 1].flatten() * stds[1] + means[1], datax[:, 2].flatten() * stds[2] + means[2],
+                                u_pred, vmin=-5, vmax=5, levels=50)  # , cmap='seismic')
+    circle = plt.Circle((0, 0), 0.0035, color='grey')
+    axs[0, 1].add_patch(circle)
+    plt.colorbar(im2, ax=axs[0, 1])
+    im3 = axs[0, 2].tricontourf(datax[:, 1].flatten() * stds[1] + means[1], datax[:, 2].flatten() * stds[2] + means[2], (
+        (u_pred) - (datay[:, 0] * stds[3] + means[3])), vmin=-5, vmax=5, levels=50)  # , cmap='seismic')
+    circle = plt.Circle((0, 0), 0.0035, color='grey')
+    axs[0, 2].add_patch(circle)
+    plt.colorbar(im3, ax=axs[0, 2])
+    im1 = axs[1, 0].tricontourf(datax[:, 1].flatten() * stds[1] + means[1], datax[:, 2].flatten() * stds[2] + means[2],
+                                datay[:, 1] * stds[4] + means[4], vmin=-5, vmax=5, levels=50)  # , cmap='seismic')
+    circle = plt.Circle((0, 0), 0.0035, color='grey')
+    axs[1, 0].add_patch(circle)
+    plt.colorbar(im1, ax=axs[1, 0])
+    im2 = axs[1, 1].tricontourf(datax[:, 1].flatten() * stds[1] + means[1], datax[:, 2].flatten() * stds[2] + means[2],
+                                v_pred, vmin=-5, vmax=5, levels=50)  # , cmap='seismic')
+    circle = plt.Circle((0, 0), 0.0035, color='grey')
+    axs[1, 1].add_patch(circle)
+    plt.colorbar(im2, ax=axs[1, 1])
+    im3 = axs[1, 2].tricontourf(datax[:, 1].flatten() * stds[1] + means[1], datax[:, 2].flatten() * stds[2] + means[2], (
+        (v_pred) - (datay[:, 1] * stds[4] + means[4])), vmin=-5, vmax=5, levels=50)  # , cmap='seismic')
+    circle = plt.Circle((0, 0), 0.0035, color='grey')
+    axs[1, 2].add_patch(circle)
+    plt.colorbar(im3, ax=axs[1, 2])
+    axs[0, 0].set_xlabel('x')
+    axs[0, 0].set_ylabel('y')
+    axs[0, 0].set_title('u true')
+    axs[0, 1].set_title('u pred')
+    axs[0, 2].set_title('u error')
+    axs[1, 0].set_title('v true')
+    axs[1, 1].set_title('v pred')
+    axs[1, 2].set_title('v error')
+    plt.savefig(path + f'/vis_{mode}.png')
+    plt.close()
+    plt.clf()
+
     return True

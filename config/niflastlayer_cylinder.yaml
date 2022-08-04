@@ -3,7 +3,7 @@ dataset: cylinder
 data_cfg:
   train_timesteps: 16
   test_timesteps: 4
-  normalize: standard # not implemented
+  normalize: minmax # not implemented
 cfg_shape_net:
   use_resblock: false
   connectivity: last_layer

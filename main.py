@@ -11,6 +11,7 @@ import torchvision.datasets as dset
 import torchvision.transforms as transforms
 import torchvision.utils as vutils
 from torch.utils.tensorboard import SummaryWriter
+from datasets.cylinderflow import Cylinder
 
 from datasets.wave_1d import Wave_1d
 from datasets.wave_hf1d import Wave_1dhf
@@ -18,7 +19,7 @@ from models.nif_lastlayer import NIF_lastlayer, lastlayer_NIF
 from models.nif_multiscale import multiscale_NIF
 from models.simple_nif import simple_NIF
 from utils.utils import count_params
-from utils.visual import visual_1dwave
+from utils.visual import visual_1dwave, visual_cylinder
 from utils.yaml import yaml2dict, dict2yaml
 from utils.scheduler import nif_scheduler
 
@@ -39,9 +40,15 @@ def main(path):
     path = '../NIF_expe/datasets/data'
     dtrain = Wave_1d(path, 0, 1600, normalize=cfg['data_cfg']['normalize'])
     dtest = Wave_1d(path, 1600, 2000, normalize=cfg['data_cfg']['normalize'])
+    visual_func = visual_1dwave
     dtrain = Wave_1dhf(path, 0, 1600, normalize=cfg['data_cfg']['normalize'])
     dtest = Wave_1dhf(path, 1600, 2000, normalize=cfg['data_cfg']['normalize'])
+    visual_func = visual_1dwave
+    dtrain = Cylinder(path, 0, 163666, normalize=cfg['data_cfg']['normalize'])
+    dtest = Cylinder(path, 163666, 191775, normalize=cfg['data_cfg']['normalize'])
+    visual_func = visual_cylinder
     print(dtrain)
+    cfg['training_cfg']['visual_func'] = visual_func
 
     torch.manual_seed(cfg['training_cfg']['seed'])
     cfg['device'] = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -51,7 +58,10 @@ def main(path):
     dataloader_test = torch.utils.data.DataLoader(dtest, batch_size=cfg['training_cfg']['batch_size'], shuffle=True, num_workers=1)
 
     tic = time.time()
-    model = simple_NIF(cfg, logger=writer, device = cfg['device'], ckpt_save_path=save_path, visual=visual_1dwave) if cfg['model'] == 'nif_simple' else multiscale_NIF(cfg, logger=writer, device=cfg['device'], ckpt_save_path=save_path, visual=visual_1dwave) if cfg['model'] == 'nif_multiscale' else lastlayer_NIF(cfg, logger=writer, device=cfg['device'], ckpt_save_path=save_path, visual=visual_1dwave) if cfg['model'] == 'nif_lastlayer' else NotImplementedError('This model has not been implemented')
+    model = simple_NIF(cfg, logger=writer, device=cfg['device'], ckpt_save_path=save_path, visual=visual_func) if cfg['model'] == 'nif_simple' \
+            else multiscale_NIF(cfg, logger=writer, device=cfg['device'], ckpt_save_path=save_path, visual=visual_func) if cfg['model'] == 'nif_multiscale' \
+            else lastlayer_NIF(cfg, logger=writer, device=cfg['device'], ckpt_save_path=save_path, visual=visual_func) if cfg['model'] == 'nif_lastlayer' \
+            else NotImplementedError('This model has not been implemented')
     cfg['training_cfg']['nb_params'] = count_params(model)
     print("model :", model)
     

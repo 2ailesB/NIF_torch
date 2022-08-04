@@ -10,13 +10,15 @@ def std_normalize(data):
     data -= means
     data /= stds
 
-    return data
+    return data, means, stds
 
 def minimax_normalize(data):
     mins = data.min(0)
     maxs = data.max(0)
+    means = data.mean(axis=0)
+    stds = data.std(axis=0)
     
     data -= mins
     data /= (maxs-mins)
 
-    return data
+    return data, means, stds
