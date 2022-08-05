@@ -3,6 +3,7 @@ import os
 
 import torch
 import torch.nn as nn
+from adabelief_pytorch import AdaBelief
 
 from torchvision.utils import make_grid
 from utils.progress_bar import print_progress_bar
@@ -10,7 +11,7 @@ from utils.progress_bar import print_progress_bar
 class PytorchNIF(nn.Module):
     def __init__(self, criterion='mse', logger=None, opt='adam', device='cpu', ckpt_save_path=None, tag='', visual=None):
         super().__init__()
-        self.opt_type = opt if opt in ['sgd', 'adam'] else ValueError
+        self.opt_type = opt if opt in ['sgd', 'adam', 'adabelief'] else ValueError
         self.opt = None
         self.log = logger
         self.device = device
@@ -94,6 +95,8 @@ class PytorchNIF(nn.Module):
             self.opt = torch.optim.SGD(params=self.model.parameters(), lr=lr)
         elif self.opt_type == 'adam':
             self.opt = torch.optim.Adam(params=self.model.parameters(), lr=lr, betas=betas)
+        elif self.opt_type == 'adabelief':
+            self.opt = AdaBelief(self.model.parameters(), lr=lr, eps=1e-16, betas=(0.9,0.999), weight_decouple = True, rectify = False)
         else:
             raise ValueError('Unknown optimizer')
 

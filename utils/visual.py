@@ -65,6 +65,7 @@ def visual_cylinder(model, datax, datay, path, mode):
     # print(" (datay[:, 1].flatten() * stds[4] + means[4]).max(0):", (datay[:, 1].flatten() * stds[4] + means[4]).max(0))
 
     uv_pred = model(datax[:, 0:3]).to('cpu').detach().numpy()  # (300, 2)
+
     u_pred = uv_pred[:, 0] * stds[3] + means[3]
     v_pred = uv_pred[:, 1] * stds[4] + means[4]
     datax = datax.to('cpu').detach().numpy()

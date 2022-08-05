@@ -62,9 +62,9 @@ def main(path):
     dataloader_train = torch.utils.data.DataLoader(dtrain, batch_size=cfg['training_cfg']['batch_size'], shuffle=True, num_workers=1)
     dataloader_test = torch.utils.data.DataLoader(dtest, batch_size=cfg['training_cfg']['batch_size'], shuffle=True, num_workers=1)
     tic = time.time()
-    model = simple_NIF(cfg, logger=writer, device=cfg['device'], ckpt_save_path=save_path, visual=visual_func) if cfg['model'] == 'nif_simple' \
-            else multiscale_NIF(cfg, logger=writer, device=cfg['device'], ckpt_save_path=save_path, visual=visual_func) if cfg['model'] == 'nif_multiscale' \
-            else lastlayer_NIF(cfg, logger=writer, device=cfg['device'], ckpt_save_path=save_path, visual=visual_func) if cfg['model'] == 'nif_lastlayer' \
+    model = simple_NIF(cfg, logger=writer, opt=cfg['training_cfg']['opt'], device=cfg['device'], ckpt_save_path=save_path, visual=visual_func) if cfg['model'] == 'nif_simple' \
+            else multiscale_NIF(cfg, logger=writer, opt=cfg['training_cfg']['opt'], device=cfg['device'], ckpt_save_path=save_path, visual=visual_func) if cfg['model'] == 'nif_multiscale' \
+            else lastlayer_NIF(cfg, logger=writer, opt=cfg['training_cfg']['opt'], device=cfg['device'], ckpt_save_path=save_path, visual=visual_func) if cfg['model'] == 'nif_lastlayer' \
             else NotImplementedError('This model has not been implemented')
     cfg['training_cfg']['nb_params'] = count_params(model)
     print("model :", model)
