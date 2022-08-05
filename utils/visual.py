@@ -40,14 +40,18 @@ def visual_cylinder(model, datax, datay, path, mode):
 
     index_ = np.diff(datax[:, 0].cpu().detach().numpy(), append=0) > 0
     time_jump_index = np.arange(datax.shape[0])[index_]+1
-    datax = datax[-time_jump_index[-1]:, :]
-    datay = datay[-time_jump_index[-1]:, :]
+    print("time_jump_index :", time_jump_index)
+    datax = datax[time_jump_index[-1]:, :]
+    datay = datay[time_jump_index[-1]:, :]
     
     data = torch.cat((datax, datay), dim=1)
     # stds = data.std(0).to('cpu').detach().numpy()
     # means = data.mean(0).to('cpu').detach().numpy()
     stds = np.array([ 1.0821e-01,  1.4988e-02,  5.6368e-05,  2.8442e+00, -2.7569e-02])
     means = np.array([0.0029, 0.0139, 0.0093, 1.1646, 1.3246])
+
+    # print("datax.shape :", datax.shape)
+    # print("datay.shape :", datay.shape)
 
     uv_pred = model(datax[:, 0:3]).to('cpu').detach().numpy()  # (300, 2)
     u_pred = uv_pred[:, 0] * stds[3] + means[3]
