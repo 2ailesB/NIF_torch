@@ -13,8 +13,8 @@ def std_normalize(data):
     return data, means, stds
 
 def minimax_normalize(data):
-    mins = data.min(0)
-    maxs = data.max(0)
+    mins, _ = data.min(0)
+    maxs, _ = data.max(0)
     means = data.mean(axis=0)
     stds = data.std(axis=0)
     

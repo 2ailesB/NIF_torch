@@ -10,11 +10,11 @@ class Cylinder(Dataset) : #héritage de classe Dataset de Pytorch
         super().__init__()
         # TODO : add end = len(dataset)
         data = np.load(path + '/cylinderflow.npz')['data']
-        datax = data[start:end, [0, 1, 2]] # parameter (t) = 0, shape (x, y) = (1, 2)
-        datay = data[start:end, [3, 4]]
+        datax = data[:, [0, 1, 2]] # parameter (t) = 0, shape (x, y) = (1, 2)
+        datay = data[:, [3, 4]]
 
         self.datax = torch.tensor(datax).float()#.view(size) permet de modifier la shape et d'utiliser le même espace de stockage
-        self.datay = torch.tensor(datay) #labels
+        self.datay = torch.tensor(datay).float() #labels
         self.nsamples = self.datax.shape[0]
 
         self.mode = 'train'*train + 'val'*(1-train)
@@ -28,10 +28,15 @@ class Cylinder(Dataset) : #héritage de classe Dataset de Pytorch
             self.datax, datax_means, datax_stds = minimax_normalize(self.datax)
             self.datay, datay_means, datay_stds = minimax_normalize(self.datay)
         else :
-            raise NotImplementedError('Normalization not implemented')
+            raise NotImplementedError('Normalization not implemented') #TODO : rescalinf test data le même que train data
+
+        self.datax = self.datax[start:end, :]
+        self.datay = self.datay[start:end, :]
 
         self.means = torch.cat((datax_means, datay_means), dim=0)
         self.stds = torch.cat((datax_stds, datay_stds), dim=0)
+        # print("self.means :", self.means)
+        # print("self.stds :", self.stds)
 
     def __getitem__(self ,index ):
         """retourne un couple (exemple,label) correspondant à l’index"""

@@ -21,7 +21,7 @@ from models.simple_nif import simple_NIF
 from utils.utils import count_params
 from utils.visual import visual_1dwave, visual_cylinder
 from utils.yaml import yaml2dict, dict2yaml
-from utils.scheduler import nif_scheduler
+from utils.scheduler import nif_scheduler5000, nif_scheduler600
 
 def main(path):
 
@@ -53,10 +53,14 @@ def main(path):
     torch.manual_seed(cfg['training_cfg']['seed'])
     cfg['device'] = 'cuda' if torch.cuda.is_available() else 'cpu'
     print('Device: ', cfg['device'])
+    if torch.cuda.is_available():
+        gpu_id = 0
+        device = torch.device(f'cuda:{gpu_id}')
+    else:
+        device = torch.device('cpu')
 
     dataloader_train = torch.utils.data.DataLoader(dtrain, batch_size=cfg['training_cfg']['batch_size'], shuffle=True, num_workers=1)
     dataloader_test = torch.utils.data.DataLoader(dtest, batch_size=cfg['training_cfg']['batch_size'], shuffle=True, num_workers=1)
-
     tic = time.time()
     model = simple_NIF(cfg, logger=writer, device=cfg['device'], ckpt_save_path=save_path, visual=visual_func) if cfg['model'] == 'nif_simple' \
             else multiscale_NIF(cfg, logger=writer, device=cfg['device'], ckpt_save_path=save_path, visual=visual_func) if cfg['model'] == 'nif_multiscale' \
@@ -66,7 +70,7 @@ def main(path):
     print("model :", model)
     
     model.fit(dataloader_train, n_epochs=cfg['training_cfg']['nepoch'], lr=cfg['training_cfg']['lr_init'],
-              scheduler = nif_scheduler, validation_data=dataloader_test, verbose=100,
+              scheduler = nif_scheduler600, validation_data=dataloader_test, verbose=100,
               save_images_freq=cfg['training_cfg']['print_figure_epoch'], vistrain=dtrain[:], vistest=dtest[:])
 
     cfg['training_time'] = time.time() - tic
@@ -80,4 +84,5 @@ def main(path):
 if __name__ == "__main__":
     cfg_path = 'config/nif_1dwave.yaml'
     cfg_path = 'config/nifmultiscale_1dhfwave.yaml'
+    cfg_path = 'config/niflastlayer_cylinder.yaml'
     print(main(cfg_path))

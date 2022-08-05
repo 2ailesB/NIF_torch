@@ -135,10 +135,10 @@ class PytorchNIF(nn.Module):
             if n % verbose == 0:
                 print('Epoch {:3d} training loss: {:1.4f} | Validation loss: {:1.4f} | Best epoch {:3d}'.format(
                     n, t_loss, v_loss, self.best_epoch))
-
-            if save_images_freq is not None and n % save_images_freq == 0 and self.visual_func is not None: # TODO visual logs
-                self.visual_func(self.model, vistrain[0].to(self.device), vistrain[1], self.ckpt_save_path, 'train')
-                self.visual_func(self.model, vistest[0].to(self.device), vistest[1], self.ckpt_save_path, 'test')
+            with torch.no_grad():
+                if save_images_freq is not None and n % save_images_freq == 0 and self.visual_func is not None: # TODO visual logs
+                    self.visual_func(self.model, vistrain[0].to(self.device), vistrain[1].to(self.device), self.ckpt_save_path, 'train')
+                    self.visual_func(self.model, vistest[0].to(self.device), vistest[1].to(self.device), self.ckpt_save_path, 'test')
 
             if save_model_freq is not None and n % save_model_freq == 0 :
                 assert self.ckpt_save_path is not None, 'Need a path to save models'

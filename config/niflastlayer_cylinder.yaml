@@ -3,7 +3,7 @@ dataset: cylinder
 data_cfg:
   train_timesteps: 16
   test_timesteps: 4
-  normalize: minmax # not implemented
+  normalize: standard 
 cfg_shape_net:
   use_resblock: false
   connectivity: last_layer
@@ -21,7 +21,7 @@ cfg_parameter_net:
   nlayers: 2
   activation: swish
 training_cfg:
-  batch_size: 8192
+  batch_size: 65536
   checkpt_epoch: 50
   display_epoch: 50
   enable_mixed_precision: false
@@ -31,3 +31,4 @@ training_cfg:
   print_figure_epoch: 50
   ckpt_epoch: 0
   ckpt_path: logs/1dwave/run_NIF_1dwave_20220630-121818/
+  seed: 0
