@@ -38,12 +38,12 @@ def main(path):
     # cfg['ckpt_save_path']    = None
 
     path = '../NIF_expe/datasets/data'
-    dtrain = Wave_1d(path, 0, 1600, normalize=cfg['data_cfg']['normalize'])
-    dtest = Wave_1d(path, 1600, 2000, normalize=cfg['data_cfg']['normalize'])
-    visual_func = visual_1dwave
-    dtrain = Wave_1dhf(path, 0, 1600, normalize=cfg['data_cfg']['normalize'])
-    dtest = Wave_1dhf(path, 1600, 2000, normalize=cfg['data_cfg']['normalize'])
-    visual_func = visual_1dwave
+    # dtrain = Wave_1d(path, 0, 1600, normalize=cfg['data_cfg']['normalize'])
+    # dtest = Wave_1d(path, 1600, 2000, normalize=cfg['data_cfg']['normalize'])
+    # visual_func = visual_1dwave
+    # dtrain = Wave_1dhf(path, 0, 1600, normalize=cfg['data_cfg']['normalize'])
+    # dtest = Wave_1dhf(path, 1600, 2000, normalize=cfg['data_cfg']['normalize'])
+    # visual_func = visual_1dwave
     dtrain = Cylinder(path, 0, 163666, normalize=cfg['data_cfg']['normalize'])
     dtest = Cylinder(path, 163666, 191775, normalize=cfg['data_cfg']['normalize'])
     visual_func = visual_cylinder

@@ -22,3 +22,18 @@ def minimax_normalize(data):
     data /= (maxs-mins)
 
     return data, means, stds
+
+def nif_normalize(data, din, dout):
+    mean = data.mean(axis=0)
+    std = data.std(axis=0)
+
+    for i in range(din):
+        mean[i] = 0.5*(torch.min(data[:,i])+torch.max(data[:,i]))
+        std[i] = 0.5*(-torch.min(data[:,i])+torch.max(data[:,i]))
+
+    # also we normalize the output target to make sure the maximal is most 1
+    for j in range(din, din+dout):
+        std[j] = torch.max(torch.abs(data[:,j]))
+
+    normalized_data = (data - mean)/std
+    return normalized_data, mean, std

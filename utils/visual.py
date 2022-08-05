@@ -40,18 +40,29 @@ def visual_cylinder(model, datax, datay, path, mode):
 
     index_ = np.diff(datax[:, 0].cpu().detach().numpy(), append=0) > 0
     time_jump_index = np.arange(datax.shape[0])[index_]+1
-    print("time_jump_index :", time_jump_index)
+    # print("time_jump_index :", time_jump_index)
     datax = datax[time_jump_index[-1]:, :]
     datay = datay[time_jump_index[-1]:, :]
     
     data = torch.cat((datax, datay), dim=1)
     # stds = data.std(0).to('cpu').detach().numpy()
     # means = data.mean(0).to('cpu').detach().numpy()
-    stds = np.array([ 1.0821e-01,  1.4988e-02,  5.6368e-05,  2.8442e+00, -2.7569e-02])
-    means = np.array([0.0029, 0.0139, 0.0093, 1.1646, 1.3246])
+    stds = np.array([4.7481e-03, 2.5000e-02, 2.0000e-02, 5.5720e+00, 4.0966e+00])
+    means = np.array([ 0.1083,  0.0150,  0.0000,  2.8442, -0.0276])
 
     # print("datax.shape :", datax.shape)
     # print("datay.shape :", datay.shape)
+
+    # print(" (datax[:, 1].flatten() * stds[1] + means[1]).min(0):", (datax[:, 1].flatten() * stds[1] + means[1]).min(0))
+    # print(" (datax[:, 2].flatten() * stds[2] + means[2]).min(0):", (datax[:, 2].flatten() * stds[2] + means[2]).min(0))
+    # print(" (datax[:, 0].flatten() * stds[0] + means[0]).min(0):", (datax[:, 0].flatten() * stds[0] + means[0]).min(0))
+    # print(" (datay[:, 0].flatten() * stds[3] + means[3]).min(0):", (datay[:, 0].flatten() * stds[3] + means[3]).min(0))
+    # print(" (datay[:, 1].flatten() * stds[4] + means[4]).min(0):", (datay[:, 1].flatten() * stds[4] + means[4]).min(0))
+    # print(" (datax[:, 1].flatten() * stds[1] + means[1]).max(0):", (datax[:, 1].flatten() * stds[1] + means[1]).max(0))
+    # print(" (datax[:, 2].flatten() * stds[2] + means[2]).max(0):", (datax[:, 2].flatten() * stds[2] + means[2]).max(0))
+    # print(" (datax[:, 0].flatten() * stds[0] + means[0]).max(0):", (datax[:, 0].flatten() * stds[0] + means[0]).max(0))
+    # print(" (datay[:, 0].flatten() * stds[3] + means[3]).max(0):", (datay[:, 0].flatten() * stds[3] + means[3]).max(0))
+    # print(" (datay[:, 1].flatten() * stds[4] + means[4]).max(0):", (datay[:, 1].flatten() * stds[4] + means[4]).max(0))
 
     uv_pred = model(datax[:, 0:3]).to('cpu').detach().numpy()  # (300, 2)
     u_pred = uv_pred[:, 0] * stds[3] + means[3]
