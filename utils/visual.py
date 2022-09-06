@@ -4,16 +4,20 @@ import torch
 
 def visual_1dwave(model, datax, datay, path, mode):
     nsamples = datax.shape[0]
-    xx = datax[:, 0].reshape(int(nsamples/200), 200).to('cpu')
-    tt = datax[:, 1].reshape(int(nsamples/200), 200).to('cpu')
+    tt = datax[:, 0].reshape(int(nsamples/200), 200).to('cpu')
+    xx = datax[:, 1].reshape(int(nsamples/200), 200).to('cpu')
+    
     # xx, tt = np.meshgrid(x, t)
     # print("xx.shape :", xx.shape)
     # print("datax.shape :", datax.shape)
     # print("model(datax).shape :", model(datax).shape)
+    means = np.array([1.0821e-01, 1.4988e-02, 5.6368e-05])
+    stds = np.array([0.0029, 0.0139, 0.0093])
 
     u_pred = model(
-    datax).reshape(int(nsamples/200), 200).detach().to('cpu')
-    datay = datay.reshape(int(nsamples/200), 200)
+        datax).reshape(int(nsamples/200), 200).detach().to('cpu')
+    u_pred = u_pred # * stds[2] + means[2]
+    datay = datay.reshape(int(nsamples/200), 200).to('cpu').detach().numpy()
     fig, axs = plt.subplots(1, 3, figsize=(16, 4))
     im1 = axs[0].contourf(tt, xx, datay.reshape(
         int(nsamples/200), 200), vmin=-5, vmax=5, levels=50, cmap='seismic')

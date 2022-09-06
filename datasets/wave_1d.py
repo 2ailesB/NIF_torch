@@ -10,8 +10,8 @@ class Wave_1d(Dataset) : #héritage de classe Dataset de Pytorch
         super().__init__()
 
         data = np.load(path + '/traveling_wave.npz')['data']
-        datax = data[start:end, [0, 1]] 
-        datay = data[start:end, [2]]
+        datax = data[:, [0, 1]] 
+        datay = data[:, [2]]
 
         self.datax = torch.tensor(datax).float()#.view(size) permet de modifier la shape et d'utiliser le même espace de stockage
         self.datay = torch.tensor(datay) #labels
@@ -20,11 +20,19 @@ class Wave_1d(Dataset) : #héritage de classe Dataset de Pytorch
         self.mode = 'train'*train + 'val'*(1-train)
 
         if normalize == 'standard':
-            self.datax, _, _ = std_normalize(self.datax)
-            self.datay, _, _ = std_normalize(self.datay)
+            self.datax, datax_means, datax_stds = std_normalize(self.datax)
+            self.datay, datay_means, datay_stds = std_normalize(self.datay)
+            self.datax = self.datax[start:end, :]
+            self.datay = self.datay[start:end, :]
+            self.means = torch.cat((datax_means, datay_means), dim=0)
+            self.stds = torch.cat((datax_stds, datay_stds), dim=0)
         elif normalize == 'minmax':
-            self.datax, _, _  = minimax_normalize(self.datax)
-            self.datay, _, _  = minimax_normalize(self.datay)
+            self.datax, datax_means, datax_stds  = minimax_normalize(self.datax)
+            self.datay, datay_means, datay_stds  = minimax_normalize(self.datay)
+            self.datax = self.datax[start:end, :]
+            self.datay = self.datay[start:end, :]
+            self.means = torch.cat((datax_means, datay_means), dim=0)
+            self.stds = torch.cat((datax_stds, datay_stds), dim=0)
         else :
             raise NotImplementedError('Normalization not implemented')
 

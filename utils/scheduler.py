@@ -1,4 +1,4 @@
-def nif_scheduler5000(epoch, lr):
+def nifs_scheduler5000(epoch, lr):
     if epoch < 1000:
         return lr
     elif epoch < 2000:
@@ -8,7 +8,17 @@ def nif_scheduler5000(epoch, lr):
     else:
         return 1e-4
 
-def nif_scheduler600(epoch, lr):
+def nifms_scheduler5000(epoch, lr):
+        if epoch < 1000:
+            return lr
+        elif epoch < 2000:
+            return 1e-4
+        elif epoch < 4000:
+            return 5e-5
+        else:
+            return 1e-5
+
+def nifll_scheduler600(epoch, lr):
         if epoch < 200:
             return lr
         elif epoch < 400:

@@ -9,7 +9,9 @@ def std_normalize(data):
         
     data -= means
     data /= stds
-
+    # means : tensor([1.0821e-01, 1.4988e-02, 5.6368e-05])
+    # stds : tensor([0.0029, 0.0139, 0.0093])
+ 
     return data, means, stds
 
 def minimax_normalize(data):
