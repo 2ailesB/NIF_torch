@@ -6,12 +6,25 @@ Tensorflow version at :  https://github.com/pswpswpsw/nif.
 
 ## Results
 ### simple NIF
+Using the cfg file 'nif_1dwave.yaml' in the config folder, we have the following result :
+
+|Loss|Visual results|
+|:--:|:------------:|
+|![Training loss with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/)|![Training results with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/)|
+|![Testing loss with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/)|![Testing results with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/)|
 
 
 ### multiscale NIF
+Using the cfg file 'nifmultiscale.yaml' in the config folder, we have the following result :
+
+|Loss|Visual results|
+|:--:|:------------:|
+|![Training loss with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/)|![Training results with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/)|
+|![Testing loss with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/)|![Testing results with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/)|
+
 
 ### last layer NIF
-Using the cfg file 'niflastlayer_cylinder' in the config folder, we have the following result :
+Using the cfg file 'niflastlayer_cylinder.yaml' in the config folder, we have the following result :
 
 |Loss|Visual results|
 |:--:|:------------:|
