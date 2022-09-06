@@ -20,7 +20,7 @@ Using the cfg file 'nifmultiscale.yaml' in the config folder, we have the follow
 |Loss|Visual results|
 |:--:|:------------:|
 |![Training loss with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/nifms_train_loss.png)|![Training results with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/nifms_vis_train.png)|
-|![Testing loss with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/nims_val_loss.png)|![Testing results with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/nifms_vis_test.png)|
+|![Testing loss with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/nifms_val_loss.png)|![Testing results with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/nifms_vis_test.png)|
 
 
 ### last layer NIF
