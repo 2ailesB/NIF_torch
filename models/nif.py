@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from models.layers.mlp import MLP, MLP_parametrized, MLP4SIREN
-from models.layers.siren import SIREN, SIREN_parametrized
+from models.layers.siren import SIREN, SIRENs, SIREN_parametrized
 
 class NIF(nn.Module):
     """
@@ -32,7 +32,7 @@ class NIF(nn.Module):
         if self.cfg_parameter_net['type'] =='mlp':
             self.parameter_net = MLP(self.cfg_parameter_net['input_dim'], self.cfg_parameter_net['latent_dim'], self.cfg_parameter_net['layers'], self.cfg_parameter_net['activation'])
         elif self.cfg_parameter_net['type'] == 'siren' :
-            self.parameter_net = SIREN(self.cfg_parameter_net['input_dim'], self.cfg_parameter_net['latent_dim'], self.cfg_parameter_net['layers'], omega_0=self.cfg_parameter_net['omega_0'])
+            self.parameter_net = SIRENs(self.cfg_parameter_net['input_dim'], self.cfg_parameter_net['latent_dim'], self.cfg_parameter_net['layers'], omega_0=self.cfg_parameter_net['omega_0'])
         else :
             raise NotImplementedError('NIF not implemented for this kind of layer, please use mlp or siren')
         if self.cfg_shape_net['type'] =='mlp':
@@ -84,7 +84,7 @@ class NIF_DO(nn.Module):
             self.shape_net = MLP(self.cfg_shape_net['input_dim'], self.cfg_parameter_net['latent_dim']*self.cfg_shape_net['output_dim'], self.cfg_shape_net['layers'], self.cfg_shape_net['activation'])
         elif self.cfg_shape_net['type'] == 'siren' :
             self.hnet = MLP4SIREN(self.cfg_hnet['dim_in'], self.cfg_hnet['dim_out'], self.cfg_shape_net) #TODO
-            self.shape_net = SIREN(self.cfg_shape_net['input_dim'], self.cfg_parameter_net['latent_dim']*self.cfg_shape_net['output_dim'], self.cfg_shape_net['layers'], omega_0=self.cfg_shape_net['omega_0'])
+            self.shape_net = SIRENs(self.cfg_shape_net['input_dim'], self.cfg_parameter_net['latent_dim']*self.cfg_shape_net['output_dim'], self.cfg_shape_net['layers'], omega_0=self.cfg_shape_net['omega_0'])
         else :
             raise NotImplementedError('NIF not implemented for this kind of layer, please use mlp or siren')
 

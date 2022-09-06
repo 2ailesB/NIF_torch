@@ -1,3 +1,4 @@
+from turtle import forward
 import numpy as np
 import torch
 import torch.nn as nn
@@ -32,6 +33,25 @@ class SIREN(nn.Module):
 
     def forward(self, input):
         return torch.sin(self.omega_0 * self.linear(input))
+
+
+class SIRENs(nn.Module):
+    def __init__(self, in_features, out_features, layers=None, bias=True, is_first=False, omega_0=30, **kwargs):
+        super(SIRENs, self).__init__()
+
+        self.model = []
+
+        self.layers = layers if layers is not None else []
+        self.model = nn.ModuleList([
+            nn.Sequential(SIREN(lp, lnext, bias, is_first, omega_0))
+            for lp, lnext in zip([in_features] + self.layers, self.layers + [out_features])
+            ])
+
+    def forward(self, x):
+        for idx, layer in enumerate(self.model):
+            x = layer(x)
+        return x
+
 
 class SIREN_parametrized(nn.Module):
     def __init__(self, in_features, out_features, layers=None, omega_0=30.0, dropout_rate=0.0, **kwargs):

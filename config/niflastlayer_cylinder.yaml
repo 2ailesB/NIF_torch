@@ -27,7 +27,7 @@ training_cfg:
   enable_mixed_precision: false
   enable_multi_gpu: false
   lr_init: 0.001
-  nepoch: 1500
+  nepoch: 800
   print_figure_epoch: 50
   ckpt_epoch: 0
   ckpt_path: logs/1dwave/run_NIF_1dwave_20220630-121818/
