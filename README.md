@@ -13,10 +13,10 @@ Tensorflow version at :  https://github.com/pswpswpsw/nif.
 ### last layer NIF
 Using the cfg file 'niflastlayer_cylinder' in the config folder, we have the following result :
 
-![Training loss with last layer nif on the cylinder dataset](https://github.com/2ailesB/nif_torch/img/cyl_train_loss.jpg?raw=true)
-![Training results with last layer nif on the cylinder dataset](https://github.com/2ailesB/nif_torch/img/cyl_vis_train.jpg?raw=true)
-![Testing loss with last layer nif on the cylinder dataset](https://github.com/2ailesB/nif_torch/img/cyl_test_loss.jpg?raw=true)
-![Testing results with last layer nif on the cylinder dataset](https://github.com/2ailesB/nif_torch/img/cyl_vis_test.jpg?raw=true)
+![Training loss with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/img/cyl_train_loss.jpg?raw=true)
+![Training results with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/img/cyl_vis_train.jpg?raw=true)
+![Testing loss with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/img/cyl_test_loss.jpg?raw=true)
+![Testing results with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/img/cyl_vis_test.jpg?raw=true)
 
 ## Key References
 <a id="1" href="https://arxiv.org/abs/2204.03216">[1]</a> Neural Implicit Flow : a mesh-agnostic dimensionality reduction of spatio-temporal data, Shaowu Pan, Steven L. Brunton, J. Nathan Kutz,  2022  
