@@ -1,6 +1,6 @@
 # NIF_torch
 An implementation of Neural Implicit Flow (Pan et al. - 2022) using PyTorch.
-Tensorflow version at :  https://github.com/pswpswpsw/nif.  
+Tensorflow/keras version at :  https://github.com/pswpswpsw/nif.  
 
 ![NIF architecture](https://github.com/2ailesB/NIF_torch/blob/main/img/NIF.png)
 
