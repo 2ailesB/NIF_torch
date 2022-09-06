@@ -10,7 +10,7 @@ Using the cfg file 'nif_1dwave.yaml' in the config folder, we have the following
 
 |Loss|Visual results|
 |:--:|:------------:|
-|![Training loss with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/)|![Training results with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/)|
+|![Training loss with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/)|![Training results with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/nifs_vis_train.png)|
 |![Testing loss with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/)|![Testing results with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/)|
 
 
@@ -19,7 +19,7 @@ Using the cfg file 'nifmultiscale.yaml' in the config folder, we have the follow
 
 |Loss|Visual results|
 |:--:|:------------:|
-|![Training loss with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/)|![Training results with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/)|
+|![Training loss with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/)|![Training results with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/nifms_vis_train.png)|
 |![Testing loss with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/)|![Testing results with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/)|
 
 
@@ -28,8 +28,8 @@ Using the cfg file 'niflastlayer_cylinder.yaml' in the config folder, we have th
 
 |Loss|Visual results|
 |:--:|:------------:|
-|![Training loss with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/cyl_train_loss.png)|![Training results with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/cyl_vis_train.png)|
-|![Testing loss with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/cyl_val_loss.png)|![Testing results with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/cyl_vis_test.png)|
+|![Training loss with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/nifll_train_loss.png)|![Training results with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/nifll_vis_train.png)|
+|![Testing loss with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/nifll_val_loss.png)|![Testing results with last layer nif on the cylinder dataset](https://github.com/2ailesB/NIF_torch/blob/main/img/nifll_vis_test.png)|
 
 ## Key References
 <a id="1" href="https://arxiv.org/abs/2204.03216">[1]</a> Neural Implicit Flow : a mesh-agnostic dimensionality reduction of spatio-temporal data, Shaowu Pan, Steven L. Brunton, J. Nathan Kutz,  2022  
