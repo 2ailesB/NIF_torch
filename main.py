@@ -37,7 +37,7 @@ def main(path):
     # cfg['logger']            = writer
     # cfg['ckpt_save_path']    = None
 
-    path = '../NIF_expe/datasets/data'
+    path = '../../datasets'
     # dtrain = Wave_1d(path, 0, 1600, normalize=cfg['data_cfg']['normalize'])
     # dtest = Wave_1d(path, 1600, 2000, normalize=cfg['data_cfg']['normalize'])
     # visual_func = visual_1dwave
