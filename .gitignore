@@ -136,3 +136,4 @@ draft.py
 sbatch/
 logs_hacienda/
 data/
+test.py
